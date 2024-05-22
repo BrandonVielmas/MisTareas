@@ -20,6 +20,29 @@ namespace MisTareas.API.Controllers
             return insertTask.Entity;
         }
 
+        [HttpPost("/api/v1/Tasks/add-by-columnId")]
+        public async Task<Data.Entities.Task> AddByColumnId([FromBody] InsertTaskDto task)
+        {
+            Data.Entities.Task newTask = new Data.Entities.Task();
+            newTask.Name = task.name;
+            newTask.Description = task.description;
+            newTask.ColumnId = task.columnId;
+            newTask.UserId = task.userId;
+
+            await _context.AddAsync(newTask);
+            await _context.SaveChangesAsync();
+
+            return newTask;
+        }
+
+        public class InsertTaskDto
+        {
+            public string name { get; set; }
+            public string description { get; set; }
+            public int columnId { get; set; }
+            public int userId { get; set; }
+        }
+
         [HttpDelete("{idTask}")]
         public async Task DeleteById(int idTask)
         {
