@@ -14,7 +14,7 @@ namespace MisTareas.API.Data
         {
             optionsBuilder.UseMySQL("server=localhost;port=3306;database=mistareas;user=root;password=Bavt_4903")
                 .UseLazyLoadingProxies(false)
-                .LogTo(l => System.Console.WriteLine(l));
+                .LogTo(Console.WriteLine);
         }
     }
 }

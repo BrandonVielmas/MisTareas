@@ -2,9 +2,8 @@
 
 namespace MisTareas.API.Data.Entities
 {
-    public class Board
+    public class Board : MisTareasBaseEntity<int>
     {
-        public int Id { get; set; }
         [Required]
         public string Name { get; set; }
         [Required]
