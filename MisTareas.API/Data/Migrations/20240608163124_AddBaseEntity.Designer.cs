@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MisTareas.API.Data;
 
@@ -10,9 +11,11 @@ using MisTareas.API.Data;
 namespace MisTareas.API.Data.Migrations
 {
     [DbContext(typeof(MisTareasContext))]
-    partial class MisTareasContextModelSnapshot : ModelSnapshot
+    [Migration("20240608163124_AddBaseEntity")]
+    partial class AddBaseEntity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

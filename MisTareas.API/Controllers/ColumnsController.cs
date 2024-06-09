@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MisTareas.API.Data;
 using MisTareas.API.Data.Entities;
@@ -17,6 +18,7 @@ namespace MisTareas.API.Controllers
             this._context = _context;
         }
 
+        [Authorize]
         [HttpGet]
         public async Task<IEnumerable<Column>> GetAll()
         {
