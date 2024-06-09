@@ -23,7 +23,7 @@ namespace MisTareas.API.Controllers
         {
             User? user = await _context.User.Include(u => u.Boards).FirstOrDefaultAsync(x => x.Email == email);
 
-            string token = GenerateJwtToken(user.UserName);
+            string token = GenerateJwtToken(user.Id.ToString());
 
             UserLogginDto res = new UserLogginDto
             { 
@@ -37,7 +37,7 @@ namespace MisTareas.API.Controllers
             return res;
         }
 
-        private string GenerateJwtToken(string userName)
+        private string GenerateJwtToken(string userId)
         {
             var jwtSettings = _configuration.GetSection("Jwt");
             var key = Encoding.ASCII.GetBytes(jwtSettings["Key"]);
@@ -45,7 +45,7 @@ namespace MisTareas.API.Controllers
             var tokenHandler = new JwtSecurityTokenHandler();
             var tokenDescriptor = new SecurityTokenDescriptor
             {
-                Subject = new ClaimsIdentity(new[] { new Claim(ClaimTypes.Name, userName) }),
+                Subject = new ClaimsIdentity(new[] { new Claim(ClaimTypes.Name, userId) }),
                 Expires = DateTime.UtcNow.AddDays(1),
                 Issuer = jwtSettings["Issuer"],
                 Audience = jwtSettings["Audience"],

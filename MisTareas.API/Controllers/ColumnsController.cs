@@ -4,9 +4,12 @@ using Microsoft.EntityFrameworkCore;
 using MisTareas.API.Data;
 using MisTareas.API.Data.Entities;
 using MisTareas.API.Dtos;
+using Org.BouncyCastle.Utilities;
+using System.Security.Claims;
 
 namespace MisTareas.API.Controllers
 {
+    [Authorize]
     [Route("api/v1/[controller]")]
     [ApiController]
     public class ColumnsController : ControllerBase
@@ -18,11 +21,14 @@ namespace MisTareas.API.Controllers
             this._context = _context;
         }
 
-        [Authorize]
         [HttpGet]
         public async Task<IEnumerable<Column>> GetAll()
         {
-            return await _context.Column.ToListAsync();
+            string userIdClaim = User.FindFirst(ClaimTypes.Name).Value;
+
+            IQueryable<Column> columns = _context.Column.Where(c => c.UserId == int.Parse(userIdClaim));
+
+            return await columns.ToListAsync();
         }
         [HttpGet("get-columns-by-board")]
         public async System.Threading.Tasks.Task<List<ColumnDto>> GetColumnsByTask([FromQuery] int userId, [FromQuery] int boardId)
