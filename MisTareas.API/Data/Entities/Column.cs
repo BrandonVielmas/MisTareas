@@ -2,9 +2,9 @@
 
 namespace MisTareas.API.Data.Entities
 {
-    public class Column
+    public class Column : MisTareasBaseEntity<int>
     {
-        public int Id { get; set; }
+        //public int Id { get; set; }
 
         [MaxLength(20)]
         [Required]
@@ -16,7 +16,7 @@ namespace MisTareas.API.Data.Entities
         [Required]
         public int BoardId { get; set; }
         public virtual Board Board { get; set; }
-        public int UserId { get; set; }
+        //public int UserId { get; set; }
         public virtual User User { get; set; }
         public virtual ICollection<Task> Tasks { get; set; }
     }

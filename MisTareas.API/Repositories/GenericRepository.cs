@@ -3,6 +3,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using MisTareas.API.Data;
 using MisTareas.API.Data.Entities;
+using MisTareas.API.Helpers;
+using System.Security.Claims;
 
 namespace MisTareas.API.Repositories
 {
@@ -20,12 +22,13 @@ namespace MisTareas.API.Repositories
 
         public IQueryable<T> GetAll()
         {
-            return Entities;
+            string userIdClaim = UserHelper.GetUserId();
+            return Entities.Where(e => e.UserId == int.Parse(userIdClaim));
         }
 
         public async Task<T?> GetById(TId id)
         {
-            return await Entities.FirstOrDefaultAsync(e => e.Id.Equals(id));
+            return await Entities.AsNoTracking().FirstOrDefaultAsync(e => e.Id.Equals(id));
         }
 
         public async Task<bool> HardDelete(TId id)

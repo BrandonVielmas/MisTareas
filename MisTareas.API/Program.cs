@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using MisTareas.API.Data;
+using MisTareas.API.Helpers;
+using MisTareas.API.Repositories.ColumnRepository;
 using MisTareas.API.Repositories.UserRepository;
 using System.Text;
 using System.Text.Json.Serialization;
@@ -15,6 +17,8 @@ var key = Encoding.ASCII.GetBytes(jwtSettings["Key"]);
 // Add services to the container.
 
 var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
+
+builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddAuthentication(opt =>
 {
@@ -70,8 +74,12 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<MisTareasContext>();
 
 builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IColumnRepository, ColumnRepository>();
 
 var app = builder.Build();
+
+var httpContextAccessor = app.Services.GetRequiredService<IHttpContextAccessor>();
+UserHelper.Configure(httpContextAccessor);
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

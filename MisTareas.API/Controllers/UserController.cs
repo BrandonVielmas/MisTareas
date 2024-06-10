@@ -1,10 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using MisTareas.API.Data;
 using MisTareas.API.Data.Entities;
 using MisTareas.API.Dtos;
+using MisTareas.API.Repositories.UserRepository;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -13,15 +13,25 @@ namespace MisTareas.API.Controllers
 {
     [Route("api/v1/[controller]")]
     [ApiController]
-    public class UserController(MisTareasContext _context, IConfiguration configuration) : ControllerBase
+    public class UserController(MisTareasContext context, IUserRepository userRepository, IConfiguration configuration) : ControllerBase
     {
-        private readonly MisTareasContext _context = _context;
         private readonly IConfiguration _configuration = configuration;
+        private readonly IUserRepository _userRepository = userRepository;
+        private readonly MisTareasContext _context = context;
+
+        //[HttpPost("create-user")]
+        //public System.Threading.Tasks.Task CreateUser()
+        //{
+
+        //}
 
         [HttpPost("loggin")]
         public async Task<UserLogginDto> Loggin([FromBody] string email)
         {
-            User? user = await _context.User.Include(u => u.Boards).FirstOrDefaultAsync(x => x.Email == email);
+            //IQueryable<User> users = _userRepository.GetAll();
+            //IQueryable<User>
+            User? user = await _context.User.AsNoTracking().Where(x => x.Email == email).FirstOrDefaultAsync();
+            //User? user = await users.AsNoTracking().Where(user => user.Email == email).FirstOrDefaultAsync();
 
             string token = GenerateJwtToken(user.Id.ToString());
 
@@ -30,7 +40,6 @@ namespace MisTareas.API.Controllers
                 UserId = user.Id, 
                 Email = user.Email, 
                 FullName = user.Name + " " + user.LastName, 
-                Boards = BoardDto.BoardToDto(user.Boards),
                 Token = token
             };
 
@@ -45,7 +54,7 @@ namespace MisTareas.API.Controllers
             var tokenHandler = new JwtSecurityTokenHandler();
             var tokenDescriptor = new SecurityTokenDescriptor
             {
-                Subject = new ClaimsIdentity(new[] { new Claim(ClaimTypes.Name, userId) }),
+                Subject = new ClaimsIdentity(new[] { new Claim(ClaimTypes.NameIdentifier, userId) }),
                 Expires = DateTime.UtcNow.AddDays(1),
                 Issuer = jwtSettings["Issuer"],
                 Audience = jwtSettings["Audience"],
