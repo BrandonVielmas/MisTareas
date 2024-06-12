@@ -4,7 +4,6 @@ using Microsoft.IdentityModel.Tokens;
 using MisTareas.API.Data;
 using MisTareas.API.Data.Entities;
 using MisTareas.API.Dtos;
-using MisTareas.API.Repositories.UserRepository;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -13,17 +12,31 @@ namespace MisTareas.API.Controllers
 {
     [Route("api/v1/[controller]")]
     [ApiController]
-    public class UserController(MisTareasContext context, IUserRepository userRepository, IConfiguration configuration) : ControllerBase
+    public class UserController(MisTareasContext context, IConfiguration configuration) : ControllerBase
     {
         private readonly IConfiguration _configuration = configuration;
-        private readonly IUserRepository _userRepository = userRepository;
         private readonly MisTareasContext _context = context;
 
-        //[HttpPost("create-user")]
-        //public System.Threading.Tasks.Task CreateUser()
-        //{
-
-        //}
+        [HttpPost("create-user")]
+        public async Task<IActionResult> CreateUser(UserCreate newUser)
+        {
+            _ = await _context.User.AddAsync(new User { 
+                                    Name = newUser.name, 
+                                    LastName = newUser.lastName,
+                                    UserName = newUser.userName,
+                                    Email = newUser.email, 
+                                    Password = newUser.password});
+            await _context.SaveChangesAsync();
+            return Created();
+        }
+        public class UserCreate()
+        {
+            public string name { get; set; }
+            public string lastName { get; set; }
+            public string userName { get; set; }
+            public string email { get; set; }
+            public string password { get; set; }
+        }
         public class UserLoggin
         {
             public string email { get; set; }
