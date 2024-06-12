@@ -12,6 +12,9 @@ namespace MisTareas.API.Data.Entities
         [Required]
         public string Email { get; set; }
         [Required]
+        [JsonIgnore]
+        public string Password { get; set; }
+        [Required]
         public string UserName { get; set; }
         public virtual ICollection<Board> Boards { get; set; }
         public virtual ICollection<Column> Columns { get; set; }

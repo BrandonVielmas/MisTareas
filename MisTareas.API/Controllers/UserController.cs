@@ -24,14 +24,19 @@ namespace MisTareas.API.Controllers
         //{
 
         //}
+        public class UserLoggin
+        {
+            public string email { get; set; }
+            public string password { get; set; }
+        }
 
         [HttpPost("loggin")]
-        public async Task<UserLogginDto> Loggin([FromBody] string email)
+        public async Task<UserLogginDto> Loggin([FromBody] UserLoggin userLoggin)
         {
-            //IQueryable<User> users = _userRepository.GetAll();
-            //IQueryable<User>
-            User? user = await _context.User.AsNoTracking().Where(x => x.Email == email).FirstOrDefaultAsync();
-            //User? user = await users.AsNoTracking().Where(user => user.Email == email).FirstOrDefaultAsync();
+            User? user = await _context.User
+                .AsNoTracking()
+                .Where(x => x.Email == userLoggin.email && x.Password == userLoggin.password)
+                .FirstOrDefaultAsync();
 
             string token = GenerateJwtToken(user.Id.ToString());
 
