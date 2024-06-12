@@ -4,7 +4,6 @@ using Microsoft.EntityFrameworkCore.ChangeTracking;
 using MisTareas.API.Data;
 using MisTareas.API.Data.Entities;
 using MisTareas.API.Helpers;
-using System.Security.Claims;
 
 namespace MisTareas.API.Repositories
 {
@@ -28,7 +27,10 @@ namespace MisTareas.API.Repositories
 
         public async Task<T?> GetById(TId id)
         {
-            return await Entities.AsNoTracking().FirstOrDefaultAsync(e => e.Id.Equals(id));
+            string userIdClaim = UserHelper.GetUserId();
+            return await Entities.AsNoTracking()
+                .Where(e => e.UserId == int.Parse(userIdClaim))
+                .FirstOrDefaultAsync(e => e.Id.Equals(id));
         }
 
         public async Task<bool> HardDelete(TId id)
@@ -46,8 +48,13 @@ namespace MisTareas.API.Repositories
 
         public async Task<T> Insert(T value)
         {
-            EntityEntry<T> result = await Entities.AddAsync(value);
-            return result.Entity;
+            string userIdClaim = UserHelper.GetUserId();
+            if (int.Parse(userIdClaim) == value.UserId)
+            {
+                EntityEntry<T> result = await Entities.AddAsync(value);
+                return result.Entity;
+            }
+            return null;
         }
 
         public async Task<bool> SoftDelete(TId id)
@@ -68,7 +75,11 @@ namespace MisTareas.API.Repositories
 
         public void Update(T value)
         {
-            Entities.Update(value);
+            string userIdClaim = UserHelper.GetUserId();
+            if (int.Parse(userIdClaim) == value.UserId)
+            {
+                Entities.Update(value);
+            }
         }
     }
 }

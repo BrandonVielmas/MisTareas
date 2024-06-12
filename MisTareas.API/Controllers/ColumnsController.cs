@@ -5,7 +5,6 @@ using MisTareas.API.Data;
 using MisTareas.API.Data.Entities;
 using MisTareas.API.Dtos;
 using MisTareas.API.Repositories.ColumnRepository;
-using System.Security.Claims;
 
 namespace MisTareas.API.Controllers
 {
