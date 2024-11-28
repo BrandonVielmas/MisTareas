@@ -55,7 +55,6 @@ namespace MisTareas.API.Controllers
 
             UserLogginDto res = new UserLogginDto
             { 
-                UserId = user.Id, 
                 Email = user.Email, 
                 FullName = user.Name + " " + user.LastName, 
                 Token = token

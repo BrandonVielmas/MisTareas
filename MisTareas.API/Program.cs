@@ -4,6 +4,7 @@ using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using MisTareas.API.Data;
 using MisTareas.API.Helpers;
+using MisTareas.API.Repositories.BoardRepository;
 using MisTareas.API.Repositories.ColumnRepository;
 using MisTareas.API.Repositories.UserRepository;
 using System.Text;
@@ -75,6 +76,7 @@ builder.Services.AddDbContext<MisTareasContext>();
 
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IColumnRepository, ColumnRepository>();
+builder.Services.AddScoped<IBoardRepository, BoardRepository>();
 
 var app = builder.Build();
 
